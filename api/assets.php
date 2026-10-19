@@ -21,7 +21,12 @@ if (
     exit;
 }
 
-$mimeType = (new finfo(FILEINFO_MIME_TYPE))->file($assetPath) ?: 'application/octet-stream';
+$extension = strtolower(pathinfo($assetPath, PATHINFO_EXTENSION));
+$mimeType = match ($extension) {
+    'css' => 'text/css; charset=UTF-8',
+    'js', 'mjs' => 'text/javascript; charset=UTF-8',
+    default => (new finfo(FILEINFO_MIME_TYPE))->file($assetPath) ?: 'application/octet-stream',
+};
 
 header('Content-Type: '.$mimeType);
 header('X-Content-Type-Options: nosniff');
